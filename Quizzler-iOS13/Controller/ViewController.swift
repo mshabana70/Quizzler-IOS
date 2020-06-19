@@ -27,31 +27,24 @@ class ViewController: UIViewController {
     @IBAction func answerBtnPressed(_ sender: UIButton) {
         
         let userAnswer = sender.currentTitle! // True, False
-        quizBrain.checkAnswer(userAnswer)
+        let userGotItRight = quizBrain.checkAnswer(userAnswer)
         
         //Set background color of button to display right or wrong
-        if userAnswer == actualAnswer {
-            //print("Right")
+        if userGotItRight {
             sender.backgroundColor = UIColor.green
         } else {
-            //print("Wrong")
             sender.backgroundColor = UIColor.red
         }
         
-        if questionNumber < (quiz.count - 1) {
-            questionNumber += 1
-        } else {
-            print("Quiz is Complete, Restarting!")
-            questionNumber = 0
-        }
+        quizBrain.nextQuestion()
         
         Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
     }
     
     @objc func updateUI() {
         // Use this function to update the questionLabel text throughout our code
-        questionLabel.text = quiz[questionNumber].text
-        progressBar.progress = Float(questionNumber + 1) / Float(quiz.count)
+        questionLabel.text = quizBrain.getQuestionText()
+        progressBar.progress = quizBrain.getProgress()
         trueButton.backgroundColor = UIColor.clear
         falseButton.backgroundColor = UIColor.clear
     }
